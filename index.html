@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stroke Code Decision</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <h1>Stroke Code Decision</h1>
+        <p>2026 AHA/ASA AIS guideline 기반 TNK, EVT, early secondary prevention 의사결정 보조</p>
+      </div>
+      <div class="header-actions">
+        <button id="newCaseButton" class="secondary-button" type="button">New</button>
+        <button id="saveCaseButton" class="primary-button" type="button">Save Case</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="workspace" aria-label="Stroke code input">
+        <div class="section-band">
+          <h2>Case</h2>
+          <div class="grid three">
+            <label>
+              Case ID
+              <input id="caseID" autocomplete="off" />
+            </label>
+            <label>
+              Patient ID / MRN
+              <input id="patientID" autocomplete="off" />
+            </label>
+            <label>
+              Fellow
+              <input id="fellow" autocomplete="off" />
+            </label>
+          </div>
+        </div>
+
+        <div class="section-band">
+          <h2>Timing</h2>
+          <div class="grid three">
+            <label>
+              Last known well
+              <input id="lastKnownWell" type="datetime-local" />
+            </label>
+            <label>
+              Arrival
+              <input id="arrival" type="datetime-local" />
+            </label>
+            <label>
+              Decision time
+              <input id="decisionTime" type="datetime-local" />
+            </label>
+          </div>
+        </div>
+
+        <div class="section-band">
+          <h2>Clinical</h2>
+          <div class="grid four">
+            <label>
+              Age
+              <input id="age" type="number" min="0" step="1" inputmode="numeric" />
+            </label>
+            <label>
+              Weight kg
+              <input id="weightKg" type="number" min="0" step="0.1" inputmode="decimal" />
+            </label>
+            <label>
+              NIHSS
+              <input id="nihss" type="number" min="0" step="1" inputmode="numeric" />
+            </label>
+            <label>
+              Prestroke mRS
+              <input id="prestrokeMRS" type="number" min="0" max="6" step="1" inputmode="numeric" />
+            </label>
+          </div>
+          <div class="grid three compact">
+            <label>
+              Disabling deficit
+              <select id="disablingDeficit"></select>
+            </label>
+            <label>
+              Hemorrhage on CT/MRI
+              <select id="hemorrhage"></select>
+            </label>
+            <label>
+              IVT contraindication
+              <select id="ivtContraindication"></select>
+            </label>
+            <label>
+              BP controlled for IVT
+              <select id="bpControlledForIVT"></select>
+            </label>
+            <label>
+              Glucose mg/dL
+              <input id="glucoseMgDL" type="number" min="0" step="1" inputmode="numeric" />
+            </label>
+            <label>
+              Received IVT
+              <select id="receivedIVT"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="section-band">
+          <h2>Imaging</h2>
+          <div class="grid four">
+            <label>
+              LVO site
+              <select id="lvoSite"></select>
+            </label>
+            <label>
+              ASPECTS
+              <input id="aspects" type="number" min="0" max="10" step="1" inputmode="numeric" />
+            </label>
+            <label>
+              PC-ASPECTS
+              <input id="pcAspects" type="number" min="0" max="10" step="1" inputmode="numeric" />
+            </label>
+            <label>
+              Mass effect
+              <select id="massEffect"></select>
+            </label>
+          </div>
+          <div class="grid three compact">
+            <label>
+              Wake-up/unknown onset
+              <select id="wakeupUnknownOnset"></select>
+            </label>
+            <label>
+              Advanced imaging mismatch
+              <select id="advancedImagingMismatch"></select>
+            </label>
+            <label>
+              Salvageable tissue
+              <select id="salvageableTissue"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="section-band">
+          <h2>Mechanism / Secondary Prevention</h2>
+          <div class="grid three compact">
+            <label>
+              Noncardioembolic
+              <select id="noncardioembolic"></select>
+            </label>
+            <label>
+              High-risk TIA ABCD2 >=4
+              <select id="highRiskTIA"></select>
+            </label>
+            <label>
+              AF/cardioembolic source
+              <select id="afOrCardioembolic"></select>
+            </label>
+            <label>
+              Cervical artery dissection
+              <select id="cervicalDissection"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="section-band">
+          <h2>TOAST Etiology Predictor</h2>
+          <div class="grid three compact">
+            <label>
+              Infarct pattern
+              <select id="infarctPattern">
+                <option>Unknown</option>
+                <option>Cortical infarction</option>
+                <option>Borderzone/watershed infarction</option>
+                <option>Single small subcortical infarction <=1.5 cm</option>
+                <option>Single large subcortical infarction >1.5 cm</option>
+                <option>Multiple subcortical infarctions</option>
+                <option>Mixed cortical-subcortical infarctions</option>
+              </select>
+            </label>
+            <label>
+              Relevant large-artery stenosis >=50%
+              <select id="largeArteryStenosis"></select>
+            </label>
+            <label>
+              High-risk cardiac source
+              <select id="highRiskCardiacSource"></select>
+            </label>
+            <label>
+              Cortical infarct/signs
+              <select id="corticalInfarct"></select>
+            </label>
+            <label>
+              Multiple vascular territories
+              <select id="multipleTerritories"></select>
+            </label>
+            <label>
+              Lacunar syndrome
+              <select id="lacunarSyndrome"></select>
+            </label>
+            <label>
+              Small deep infarct &lt;1.5 cm
+              <select id="smallDeepInfarct"></select>
+            </label>
+            <label>
+              Other determined cause found
+              <select id="otherDeterminedCause"></select>
+            </label>
+            <label>
+              Other cause type
+              <select id="otherCauseType">
+                <option>None</option>
+                <option>Arterial dissection</option>
+                <option>Moyamoya</option>
+                <option>Vasculitis</option>
+                <option>Fibromuscular dysplasia</option>
+                <option>Hypercoagulable state</option>
+                <option>RCVS</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>
+              Work-up complete
+              <select id="workupComplete"></select>
+            </label>
+          </div>
+        </div>
+
+        <div class="section-band">
+          <h2>Final Fellow Decision</h2>
+          <div class="grid three compact">
+            <label>
+              IVT final
+              <select id="finalIVTDecision"></select>
+            </label>
+            <label>
+              EVT final
+              <select id="finalEVTDecision"></select>
+            </label>
+            <label>
+              Secondary prevention final
+              <select id="finalSecondaryPlan"></select>
+            </label>
+          </div>
+          <label class="full-width">
+            Comments / reason
+            <textarea id="comments" rows="4"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <aside class="decision-panel" aria-label="Decision support">
+        <div class="summary-card">
+          <span class="eyebrow">Current case</span>
+          <h2 id="summaryCase">Unsaved case</h2>
+          <div class="metric-row">
+            <div>
+              <span>Hours from LKW</span>
+              <strong id="hoursFromLKW">0.00</strong>
+            </div>
+            <div>
+              <span>TNK dose</span>
+              <strong id="tnkDose">--</strong>
+            </div>
+          </div>
+        </div>
+
+        <div id="decisionCards" class="decision-cards"></div>
+
+        <section class="note-panel">
+          <div class="note-head">
+            <h2>Fellow Note</h2>
+            <button id="copyNoteButton" class="secondary-button" type="button">Copy Note</button>
+          </div>
+          <textarea id="fellowNote" rows="18" readonly></textarea>
+        </section>
+
+        <section class="registry-panel">
+          <div class="registry-head">
+            <h2>Registry</h2>
+            <button id="exportCSVButton" class="secondary-button" type="button">Export CSV</button>
+          </div>
+          <div id="registryList" class="registry-list"></div>
+        </section>
+
+        <section class="guide-panel">
+          <h2>Embedded Guideline Logic</h2>
+          <ul>
+            <li>TNK 0.25 mg/kg max 25 mg or alteplase for IVT-eligible adults within 4.5h.</li>
+            <li>Extended-window IVT may be reasonable at 4.5-9h or wake-up stroke with imaging mismatch/salvageable tissue.</li>
+            <li>ICA/M1 EVT criteria include NIHSS, mRS, ASPECTS, timing, age, and mass effect branches.</li>
+            <li>Basilar EVT pathway uses within 24h, NIHSS >=10, mRS 0-1, PC-ASPECTS >=6.</li>
+            <li>Early prevention logic is limited to acute guideline scope; long-term prevention needs dedicated guideline/local protocol.</li>
+            <li>TOAST etiology prediction weighs LAA, cardioembolism, lacunar SVO, other determined causes, and cryptogenic/incomplete work-up.</li>
+            <li>Cortical lesions increase CE/LAA likelihood; single small subcortical lesions support SVO; large or multiple subcortical lesions prompt LAA/BAD, CE, or systemic cause review.</li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
