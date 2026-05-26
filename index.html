@@ -18,27 +18,48 @@
       </div>
     </header>
 
+    <nav class="mobile-flow" aria-label="Mobile stroke code workflow">
+      <a href="#caseSection">Case</a>
+      <a href="#timingSection">Time</a>
+      <a href="#clinicalSection">Clinical</a>
+      <a href="#nihssSection">NIHSS</a>
+      <a href="#ivtSection">IVT</a>
+      <a href="#imagingSection">Imaging</a>
+      <a href="#evtSection">EVT</a>
+      <a href="#tiaSection">TIA</a>
+      <a href="#finalSection">Final</a>
+    </nav>
+
     <main class="layout">
       <section class="workspace" aria-label="Stroke code input">
-        <div class="section-band">
+        <div id="caseSection" class="section-band">
           <h2>Case</h2>
-          <div class="grid three">
+          <div class="grid four">
             <label>
-              Case ID
+              Case number
               <input id="caseID" autocomplete="off" />
+            </label>
+            <label>
+              Age
+              <input id="age" type="number" min="0" step="1" inputmode="numeric" />
+            </label>
+            <label>
+              Sex
+              <select id="sex">
+                <option>Unknown</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Other</option>
+              </select>
             </label>
             <label>
               Patient ID / MRN
               <input id="patientID" autocomplete="off" />
             </label>
-            <label>
-              Fellow
-              <input id="fellow" autocomplete="off" />
-            </label>
           </div>
         </div>
 
-        <div class="section-band">
+        <div id="timingSection" class="section-band">
           <h2>Timing</h2>
           <div class="grid three">
             <label>
@@ -46,7 +67,7 @@
               <input id="lastKnownWell" type="datetime-local" />
             </label>
             <label>
-              Arrival
+              Code time
               <input id="arrival" type="datetime-local" />
             </label>
             <label>
@@ -56,20 +77,20 @@
           </div>
         </div>
 
-        <div class="section-band">
+        <div id="clinicalSection" class="section-band">
           <h2>Clinical</h2>
           <div class="grid four">
             <label>
-              Age
-              <input id="age" type="number" min="0" step="1" inputmode="numeric" />
+              BP systolic
+              <input id="bpSystolic" type="number" min="0" step="1" inputmode="numeric" />
             </label>
             <label>
-              Weight kg
-              <input id="weightKg" type="number" min="0" step="0.1" inputmode="decimal" />
+              BP diastolic
+              <input id="bpDiastolic" type="number" min="0" step="1" inputmode="numeric" />
             </label>
             <label>
-              NIHSS
-              <input id="nihss" type="number" min="0" step="1" inputmode="numeric" />
+              Glucose mg/dL
+              <input id="glucoseMgDL" type="number" min="0" step="1" inputmode="numeric" />
             </label>
             <label>
               Prestroke mRS
@@ -77,6 +98,10 @@
             </label>
           </div>
           <div class="grid three compact">
+            <label>
+              Weight kg
+              <input id="weightKg" type="number" min="0" step="0.1" inputmode="decimal" />
+            </label>
             <label>
               Disabling deficit
               <select id="disablingDeficit"></select>
@@ -94,17 +119,77 @@
               <select id="bpControlledForIVT"></select>
             </label>
             <label>
-              Glucose mg/dL
-              <input id="glucoseMgDL" type="number" min="0" step="1" inputmode="numeric" />
-            </label>
-            <label>
               Received IVT
               <select id="receivedIVT"></select>
             </label>
           </div>
+          <label class="full-width">
+            Past medical history, especially prior stroke, seizure, recent surgery/bleeding
+            <textarea id="pastMedicalHistory" rows="3"></textarea>
+          </label>
+          <label class="full-width">
+            Medications, especially anti-seizure medication, antiplatelet, anticoagulant
+            <textarea id="medications" rows="3"></textarea>
+          </label>
         </div>
 
-        <div class="section-band">
+        <div id="nihssSection" class="section-band">
+          <h2>NIHSS</h2>
+          <div class="nihss-total">
+            <label>
+              NIHSS total
+              <input id="nihss" type="number" min="0" step="1" readonly />
+            </label>
+            <p>Score each item in NIHSS order. Use the prompts to check the required exam maneuver; do not coach except where the NIHSS instructions allow encouragement.</p>
+          </div>
+          <div id="nihssItems" class="score-list"></div>
+          <div class="nihss-reference">
+            <section>
+              <h3>NIHSS General Instructions</h3>
+              <ul>
+                <li>Administer stroke scale items in the order listed.</li>
+                <li>Record performance in each category after each subscale exam.</li>
+                <li>Do not go back and change scores.</li>
+                <li>Follow directions provided for each exam technique.</li>
+                <li>Scores should reflect what the patient does, not what the clinician thinks the patient can do.</li>
+                <li>Record answers while administering the exam and work quickly.</li>
+                <li>Except where indicated, the patient should not be coached.</li>
+              </ul>
+            </section>
+            <section>
+              <h3>Best Language Picture</h3>
+              <img src="./assets/nihss_picture_1.png" alt="NIHSS best language picture card" />
+            </section>
+            <section>
+              <h3>Naming Card</h3>
+              <img src="./assets/nihss_naming_1.png" alt="NIHSS naming card" />
+            </section>
+            <section>
+              <h3>Reading Sentences</h3>
+              <div class="phrase-list">
+                <p>You know how.</p>
+                <p>Down to earth.</p>
+                <p>I got home from work.</p>
+                <p>Near the table in the dining room.</p>
+                <p>They heard him speak on the radio last night.</p>
+              </div>
+            </section>
+            <section>
+              <h3>Dysarthria Word List</h3>
+              <div class="word-list">
+                <span>MAMA</span>
+                <span>TIP-TOP</span>
+                <span>FIFTY-FIFTY</span>
+                <span>THANKS</span>
+                <span>HUCKLEBERRY</span>
+                <span>BASEBALL PLAYER</span>
+                <span>CATERPILLAR</span>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div id="ivtSection" class="section-band">
           <h2>IVT Detailed Checklist</h2>
           <div class="checklist-layout">
             <section>
@@ -118,7 +203,7 @@
           </div>
         </div>
 
-        <div class="section-band">
+        <div id="imagingSection" class="section-band">
           <h2>Imaging</h2>
           <div class="grid four">
             <label>
@@ -154,7 +239,7 @@
           </div>
         </div>
 
-        <div class="section-band">
+        <div id="evtSection" class="section-band">
           <h2>EVT Detailed Checklist</h2>
           <div class="checklist-layout">
             <section>
@@ -168,7 +253,7 @@
           </div>
         </div>
 
-        <div class="section-band">
+        <div id="mechanismSection" class="section-band">
           <h2>Mechanism / Secondary Prevention</h2>
           <div class="grid three compact">
             <label>
@@ -190,7 +275,37 @@
           </div>
         </div>
 
-        <div class="section-band">
+        <div id="tiaSection" class="section-band">
+          <h2>TIA ABCD2 Score</h2>
+          <div class="grid three compact">
+            <label>
+              Clinical feature
+              <select id="tiaClinicalFeature">
+                <option>None/other</option>
+                <option>Unilateral weakness</option>
+                <option>Speech disturbance without weakness</option>
+              </select>
+            </label>
+            <label>
+              Symptom duration
+              <select id="tiaDuration">
+                <option>&lt;10 minutes</option>
+                <option>10-59 minutes</option>
+                <option>&gt;=60 minutes</option>
+              </select>
+            </label>
+            <label>
+              Diabetes
+              <select id="tiaDiabetes"></select>
+            </label>
+          </div>
+          <div class="score-result">
+            <strong id="abcd2Score">ABCD2: 0</strong>
+            <span id="abcd2Recommendation">TIA risk pathway will appear here.</span>
+          </div>
+        </div>
+
+        <div id="toastSection" class="section-band">
           <h2>TOAST Etiology Predictor</h2>
           <div class="grid three compact">
             <label>
@@ -253,9 +368,13 @@
           </div>
         </div>
 
-        <div class="section-band">
+        <div id="finalSection" class="section-band">
           <h2>Final Fellow Decision</h2>
           <div class="grid three compact">
+            <label>
+              Fellow
+              <input id="fellow" autocomplete="off" />
+            </label>
             <label>
               IVT final
               <select id="finalIVTDecision"></select>

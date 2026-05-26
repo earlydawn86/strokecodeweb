@@ -22,6 +22,12 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px;
+  background: #e9eef3;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -29,6 +35,7 @@ body {
   background: #e9eef3;
   font-family: Arial, Helvetica, sans-serif;
   letter-spacing: 0;
+  -webkit-text-size-adjust: 100%;
 }
 
 button,
@@ -64,6 +71,10 @@ textarea:focus-visible {
   color: var(--ink);
   background: #ffffff;
   border-color: var(--line);
+}
+
+.mobile-flow {
+  display: none;
 }
 
 .app-header {
@@ -193,6 +204,118 @@ textarea {
 .checklist {
   display: grid;
   gap: 8px;
+}
+
+.score-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.score-item {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.85fr) minmax(240px, 1fr);
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.score-item h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.score-item p,
+.nihss-total p,
+.score-result span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.score-item select {
+  background: var(--field);
+}
+
+.nihss-total,
+.score-result {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.score-result {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--blue-soft);
+}
+
+.nihss-reference {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.nihss-reference section {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.nihss-reference h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.nihss-reference ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #344150;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.nihss-reference img {
+  display: block;
+  width: 100%;
+  max-height: 720px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.phrase-list,
+.word-list {
+  display: grid;
+  gap: 8px;
+}
+
+.phrase-list p {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: var(--band);
+  font-size: 16px;
+}
+
+.word-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.word-list span {
+  padding: 8px 10px;
+  border-radius: 5px;
+  background: var(--band);
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .check-item {
@@ -455,9 +578,61 @@ textarea {
 }
 
 @media (max-width: 760px) {
+  html {
+    scroll-padding-top: 156px;
+  }
+
   .app-header {
     align-items: flex-start;
     flex-direction: column;
+    gap: 12px;
+    padding: 14px 12px 10px;
+  }
+
+  .app-header h1 {
+    font-size: 22px;
+  }
+
+  .app-header p {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .mobile-flow {
+    position: sticky;
+    top: 105px;
+    z-index: 4;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.96);
+    scrollbar-width: none;
+  }
+
+  .mobile-flow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-flow a {
+    flex: 0 0 auto;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    color: var(--ink);
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .layout {
+    gap: 12px;
+    padding: 12px 10px 96px;
   }
 
   .header-actions {
@@ -471,11 +646,78 @@ textarea {
   .grid.three,
   .grid.four,
   .checklist-layout,
+  .word-list,
+  .score-item,
+  .nihss-total,
+  .score-result,
   .metric-row {
     grid-template-columns: 1fr;
   }
 
   .section-band {
+    margin-bottom: 12px;
     padding: 14px;
+    border-radius: 7px;
+    box-shadow: none;
+  }
+
+  .section-band h2 {
+    font-size: 17px;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .decision-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .summary-card,
+  .decision-card,
+  .note-panel,
+  .registry-panel,
+  .guide-panel {
+    box-shadow: none;
+    border-radius: 7px;
+  }
+
+  .summary-card {
+    order: -3;
+  }
+
+  .decision-cards {
+    order: -2;
+  }
+
+  .note-panel {
+    order: -1;
+  }
+
+  .decision-card {
+    padding: 13px;
+  }
+
+  #fellowNote {
+    min-height: 300px;
+    font-size: 12px;
+  }
+
+  .nihss-reference img {
+    max-height: 460px;
+  }
+
+  .phrase-list p,
+  .word-list span {
+    font-size: 15px;
+  }
+
+  #toast {
+    bottom: 10px;
   }
 }

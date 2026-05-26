@@ -12,6 +12,99 @@ const secondaryPlans = [
   "Other"
 ];
 
+const nihssItems = [
+  {
+    id: "nihss1a",
+    title: "1a. Level of Consciousness",
+    prompt: "Observe alertness. If full evaluation is blocked by tube/language/trauma, still choose the best response. Score 3 only for no movement except reflexive posturing to noxious stimulation.",
+    options: [["0", "0 Alert; keenly responsive"], ["1", "1 Not alert, arousable by minor stimulation"], ["2", "2 Repeated/strong/painful stimulation needed"], ["3", "3 Reflex/autonomic response only or unresponsive"]]
+  },
+  {
+    id: "nihss1b",
+    title: "1b. LOC Questions",
+    prompt: "Ask month and age. No partial credit for close answers. Initial answer only; do not cue.",
+    options: [["0", "0 Both correct"], ["1", "1 One correct"], ["2", "2 Neither correct"]]
+  },
+  {
+    id: "nihss1c",
+    title: "1c. LOC Commands",
+    prompt: "Ask patient to open/close eyes and grip/release nonparetic hand. Substitute one-step command if needed. Score first attempt.",
+    options: [["0", "0 Both tasks correct"], ["1", "1 One task correct"], ["2", "2 Neither task correct"]]
+  },
+  {
+    id: "nihss2",
+    title: "2. Best Gaze",
+    prompt: "Test horizontal eye movements. Use voluntary or reflexive movements; calorics not done.",
+    options: [["0", "0 Normal"], ["1", "1 Partial gaze palsy"], ["2", "2 Forced deviation or total gaze paresis"]]
+  },
+  {
+    id: "nihss3",
+    title: "3. Visual Fields",
+    prompt: "Test upper/lower quadrants by confrontation, finger counting, or threat. Perform double simultaneous stimulation.",
+    options: [["0", "0 No visual loss"], ["1", "1 Partial hemianopia"], ["2", "2 Complete hemianopia"], ["3", "3 Bilateral hemianopia/blind"]]
+  },
+  {
+    id: "nihss4",
+    title: "4. Facial Palsy",
+    prompt: "Ask patient to show teeth, raise eyebrows, and close eyes. Use grimace to noxious stimulus if poorly responsive.",
+    options: [["0", "0 Normal symmetrical movement"], ["1", "1 Minor paralysis"], ["2", "2 Partial lower facial paralysis"], ["3", "3 Complete unilateral/bilateral paralysis"]]
+  },
+  {
+    id: "nihss5a",
+    title: "5a. Motor Arm - Left",
+    prompt: "Arm palms down 90 degrees sitting or 45 degrees supine for 10 seconds. Test nonparetic side first when possible.",
+    options: [["0", "0 No drift for 10 seconds"], ["1", "1 Drift, does not hit bed/support"], ["2", "2 Some effort against gravity"], ["3", "3 No effort against gravity"], ["4", "4 No movement"], ["0", "UN amputation/joint fusion"]]
+  },
+  {
+    id: "nihss5b",
+    title: "5b. Motor Arm - Right",
+    prompt: "Arm palms down 90 degrees sitting or 45 degrees supine for 10 seconds. Score drift if arm falls before 10 seconds.",
+    options: [["0", "0 No drift for 10 seconds"], ["1", "1 Drift, does not hit bed/support"], ["2", "2 Some effort against gravity"], ["3", "3 No effort against gravity"], ["4", "4 No movement"], ["0", "UN amputation/joint fusion"]]
+  },
+  {
+    id: "nihss6a",
+    title: "6a. Motor Leg - Left",
+    prompt: "Leg at 30 degrees supine for 5 seconds. Score drift if leg falls before 5 seconds.",
+    options: [["0", "0 No drift for 5 seconds"], ["1", "1 Drift, does not hit bed"], ["2", "2 Some effort against gravity"], ["3", "3 No effort against gravity"], ["4", "4 No movement"], ["0", "UN amputation/joint fusion"]]
+  },
+  {
+    id: "nihss6b",
+    title: "6b. Motor Leg - Right",
+    prompt: "Leg at 30 degrees supine for 5 seconds. Test each limb in turn.",
+    options: [["0", "0 No drift for 5 seconds"], ["1", "1 Drift, does not hit bed"], ["2", "2 Some effort against gravity"], ["3", "3 No effort against gravity"], ["4", "4 No movement"], ["0", "UN amputation/joint fusion"]]
+  },
+  {
+    id: "nihss7",
+    title: "7. Limb Ataxia",
+    prompt: "Finger-nose-finger and heel-shin with eyes open. Score ataxia only if out of proportion to weakness.",
+    options: [["0", "0 Absent"], ["1", "1 Present in one limb"], ["2", "2 Present in two limbs"], ["0", "UN amputation/joint fusion"]]
+  },
+  {
+    id: "nihss8",
+    title: "8. Sensory",
+    prompt: "Pinprick or noxious stimulus. Score only sensory loss attributed to stroke; test face, arms, legs, trunk as needed.",
+    options: [["0", "0 Normal"], ["1", "1 Mild-to-moderate sensory loss"], ["2", "2 Severe or total sensory loss"]]
+  },
+  {
+    id: "nihss9",
+    title: "9. Best Language",
+    prompt: "Ask patient to describe picture, name items, and read sentences. Judge comprehension from the whole exam.",
+    options: [["0", "0 No aphasia"], ["1", "1 Mild-to-moderate aphasia"], ["2", "2 Severe aphasia"], ["3", "3 Mute/global aphasia/no commands"]]
+  },
+  {
+    id: "nihss10",
+    title: "10. Dysarthria",
+    prompt: "Obtain speech sample by reading/repeating words or spontaneous speech if aphasic. Do not tell patient why tested.",
+    options: [["0", "0 Normal"], ["1", "1 Mild-to-moderate dysarthria"], ["2", "2 Severe dysarthria/anarthric"], ["0", "UN intubated/physical barrier"]]
+  },
+  {
+    id: "nihss11",
+    title: "11. Extinction and Inattention",
+    prompt: "Use prior testing plus double simultaneous stimulation. Visual, tactile, auditory, spatial, or personal neglect counts.",
+    options: [["0", "0 No abnormality"], ["1", "1 Inattention/extinction in one modality"], ["2", "2 Profound hemi-inattention or >1 modality"]]
+  }
+];
+
 const checklistGroups = {
   ivtIndications: [
     { id: "disablingDeficit45", label: "Disabling AIS deficit within 4.5 hours", note: "Treat rapidly if otherwise eligible; NIHSS can be low if deficit is disabling." },
@@ -56,14 +149,15 @@ const checklistGroups = {
 
 const storageKey = "stroke-code-decision-registry-v1";
 const fields = [
-  "caseID", "patientID", "fellow", "lastKnownWell", "arrival", "decisionTime", "age", "weightKg",
-  "nihss", "prestrokeMRS", "disablingDeficit", "hemorrhage", "ivtContraindication", "bpControlledForIVT",
-  "glucoseMgDL", "receivedIVT", "lvoSite", "aspects", "pcAspects", "massEffect", "wakeupUnknownOnset",
+  "caseID", "age", "sex", "patientID", "fellow", "lastKnownWell", "arrival", "decisionTime",
+  "bpSystolic", "bpDiastolic", "glucoseMgDL", "prestrokeMRS", "weightKg", "nihss",
+  "pastMedicalHistory", "medications", "disablingDeficit", "hemorrhage", "ivtContraindication", "bpControlledForIVT",
+  "receivedIVT", "lvoSite", "aspects", "pcAspects", "massEffect", "wakeupUnknownOnset",
   "advancedImagingMismatch", "salvageableTissue", "noncardioembolic", "highRiskTIA", "afOrCardioembolic",
   "cervicalDissection", "infarctPattern", "largeArteryStenosis", "highRiskCardiacSource", "corticalInfarct",
   "multipleTerritories", "lacunarSyndrome", "smallDeepInfarct", "otherDeterminedCause",
-  "otherCauseType", "workupComplete", "finalIVTDecision", "finalEVTDecision", "finalSecondaryPlan",
-  "comments"
+  "otherCauseType", "workupComplete", "tiaClinicalFeature", "tiaDuration", "tiaDiabetes",
+  "finalIVTDecision", "finalEVTDecision", "finalSecondaryPlan", "comments"
 ];
 const checklistFieldNames = Object.keys(checklistGroups);
 
@@ -85,12 +179,13 @@ function initialize() {
     "massEffect", "wakeupUnknownOnset", "advancedImagingMismatch", "salvageableTissue",
     "noncardioembolic", "highRiskTIA", "afOrCardioembolic", "cervicalDissection",
     "largeArteryStenosis", "highRiskCardiacSource", "corticalInfarct", "multipleTerritories",
-    "lacunarSyndrome", "smallDeepInfarct", "otherDeterminedCause", "workupComplete"
+    "lacunarSyndrome", "smallDeepInfarct", "otherDeterminedCause", "workupComplete", "tiaDiabetes"
   ].forEach((id) => fillSelect(id, triStates));
   fillSelect("lvoSite", lvoSites);
   fillSelect("finalIVTDecision", acuteDecisions);
   fillSelect("finalEVTDecision", acuteDecisions);
   fillSelect("finalSecondaryPlan", secondaryPlans);
+  renderNIHSS();
   renderChecklists();
 
   fields.forEach((id) => {
@@ -106,6 +201,13 @@ function initialize() {
 
   document.querySelectorAll("[data-check-group]").forEach((box) => {
     box.addEventListener("change", () => {
+      currentCase = readForm();
+      renderAssessment();
+    });
+  });
+
+  document.querySelectorAll("[data-nihss-item]").forEach((select) => {
+    select.addEventListener("change", () => {
       currentCase = readForm();
       renderAssessment();
     });
@@ -138,20 +240,26 @@ function blankCase() {
     id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
     savedAt: "",
     caseID: "",
+    sex: "Unknown",
     patientID: "",
     fellow: "",
     lastKnownWell: toLocalInput(lkw),
     arrival: toLocalInput(now),
     decisionTime: toLocalInput(now),
     age: "",
+    bpSystolic: "",
+    bpDiastolic: "",
     weightKg: "",
     nihss: "",
+    nihssItems: Object.fromEntries(nihssItems.map((item) => [item.id, "0"])),
     prestrokeMRS: "",
     disablingDeficit: "Unknown",
     hemorrhage: "Unknown",
     ivtContraindication: "Unknown",
     bpControlledForIVT: "Unknown",
     glucoseMgDL: "",
+    pastMedicalHistory: "",
+    medications: "",
     receivedIVT: "Unknown",
     lvoSite: "Unknown",
     aspects: "",
@@ -174,6 +282,9 @@ function blankCase() {
     otherCauseType: "None",
     workupComplete: "Unknown",
     infarctPattern: "Unknown",
+    tiaClinicalFeature: "None/other",
+    tiaDuration: "<10 minutes",
+    tiaDiabetes: "Unknown",
     finalIVTDecision: "Pending more data",
     finalEVTDecision: "Pending more data",
     finalSecondaryPlan: "Pending mechanism/workup",
@@ -192,6 +303,23 @@ function renderChecklists() {
   renderChecklist("evtContraChecklist", "evtContra");
 }
 
+function renderNIHSS() {
+  $("nihssItems").innerHTML = nihssItems.map((item) => `
+    <section class="score-item">
+      <div>
+        <h3>${escapeHTML(item.title)}</h3>
+        <p>${escapeHTML(item.prompt)}</p>
+      </div>
+      <label>
+        Score
+        <select data-nihss-item="${escapeHTML(item.id)}">
+          ${item.options.map(([value, label]) => `<option value="${escapeHTML(value)}">${escapeHTML(label)}</option>`).join("")}
+        </select>
+      </label>
+    </section>
+  `).join("");
+}
+
 function renderChecklist(containerID, groupName) {
   $(containerID).innerHTML = checklistGroups[groupName].map((item) => `
     <label class="check-item">
@@ -206,6 +334,12 @@ function readForm() {
   fields.forEach((id) => {
     next[id] = $(id).value;
   });
+  next.nihssItems = {};
+  document.querySelectorAll("[data-nihss-item]").forEach((select) => {
+    next.nihssItems[select.dataset.nihssItem] = select.value;
+  });
+  next.nihss = String(calculateNIHSS(next));
+  $("nihss").value = next.nihss;
   checklistFieldNames.forEach((group) => {
     next[group] = Array.from(document.querySelectorAll(`[data-check-group="${group}"]:checked`)).map((box) => box.value);
   });
@@ -216,6 +350,11 @@ function writeForm(strokeCase) {
   fields.forEach((id) => {
     $(id).value = strokeCase[id] ?? "";
   });
+  const selectedNIHSS = strokeCase.nihssItems || {};
+  document.querySelectorAll("[data-nihss-item]").forEach((select) => {
+    select.value = selectedNIHSS[select.dataset.nihssItem] ?? "0";
+  });
+  $("nihss").value = String(calculateNIHSS(strokeCase));
   checklistFieldNames.forEach((group) => {
     const selected = new Set(strokeCase[group] || []);
     document.querySelectorAll(`[data-check-group="${group}"]`).forEach((box) => {
@@ -248,16 +387,20 @@ function loadRegistry() {
 function renderAssessment() {
   const c = currentCase;
   const result = evaluate(c);
+  const abcd2 = calculateABCD2(c);
   $("summaryCase").textContent = c.caseID || "Unsaved case";
   $("hoursFromLKW").textContent = formatNumber(hoursFromLKW(c), 2);
   $("tnkDose").textContent = tnkDose(c) == null ? "--" : `${formatNumber(tnkDose(c), 1)} mg`;
+  $("abcd2Score").textContent = `ABCD2: ${abcd2.score}`;
+  $("abcd2Recommendation").textContent = abcd2.recommendation;
 
   const cards = [
     ["TNK / IVT", result.ivtStatus, result.ivtRationale, result.ivtTone],
     ["Mechanical Thrombectomy", result.evtStatus, result.evtRationale, result.evtTone],
     ["Early Secondary Prevention", result.secondaryStatus, result.secondaryRationale, result.secondaryTone],
     ["TOAST Etiology", result.etiologyStatus, result.etiologyRationale, result.etiologyTone],
-    ["Etiology-Based Secondary Prevention", result.etiologyPreventionStatus, result.etiologyPreventionRationale, result.etiologyPreventionTone]
+    ["Etiology-Based Secondary Prevention", result.etiologyPreventionStatus, result.etiologyPreventionRationale, result.etiologyPreventionTone],
+    ["TIA ABCD2", `Score ${abcd2.score}`, abcd2.recommendation, abcd2.tone]
   ];
   $("decisionCards").innerHTML = cards.map(([title, status, detail, tone]) => `
     <article class="decision-card ${tone}">
@@ -546,6 +689,35 @@ function checkedLabels(c, groupName) {
   return labels.length ? labels.join("; ") : "None checked";
 }
 
+function calculateNIHSS(c) {
+  const values = c.nihssItems || {};
+  return nihssItems.reduce((sum, item) => sum + (Number(values[item.id]) || 0), 0);
+}
+
+function nihssSummary(c) {
+  const values = c.nihssItems || {};
+  return nihssItems.map((item) => `${item.title}: ${values[item.id] ?? "0"}`).join("; ");
+}
+
+function calculateABCD2(c) {
+  let score = 0;
+  if ((Number(c.age) || 0) >= 60) score += 1;
+  if ((Number(c.bpSystolic) || 0) >= 140 || (Number(c.bpDiastolic) || 0) >= 90) score += 1;
+  if (c.tiaClinicalFeature === "Unilateral weakness") score += 2;
+  if (c.tiaClinicalFeature === "Speech disturbance without weakness") score += 1;
+  if (c.tiaDuration === ">=60 minutes") score += 2;
+  if (c.tiaDuration === "10-59 minutes") score += 1;
+  if (c.tiaDiabetes === "Yes") score += 1;
+
+  if (score < 3) {
+    return { score, recommendation: "ABCD2 <3: outpatient TIA work-up can be considered if rapid follow-up and no other high-risk features.", tone: "info" };
+  }
+  if (score >= 4) {
+    return { score, recommendation: "ABCD2 >=4: inpatient TIA work-up recommended/strongly considered.", tone: "warn" };
+  }
+  return { score, recommendation: "ABCD2 =3: intermediate risk; consider expedited observation/inpatient work-up depending on imaging, recurrent symptoms, and local protocol.", tone: "warn" };
+}
+
 function renderRegistry() {
   if (!registry.length) {
     $("registryList").innerHTML = `<div class="registry-empty">No saved cases yet.</div>`;
@@ -579,20 +751,24 @@ function exportCSV() {
     return;
   }
   const header = [
-    "Case_ID", "Patient_ID", "Fellow", "Hours_From_LKW", "Age", "Weight_kg", "NIHSS", "Disabling_Deficit",
+    "Case_ID", "Patient_ID", "Sex", "Fellow", "Hours_From_LKW", "Age", "Weight_kg", "BP", "Glucose", "mRS",
+    "NIHSS", "NIHSS_Items", "PMH", "Medications", "Disabling_Deficit",
     "LVO_Site", "Infarct_Pattern", "ASPECTS", "PC_ASPECTS", "TNK_Dose_mg", "Auto_IVT", "Auto_EVT",
     "IVT_Indication_Checks", "IVT_Contra_Checks", "EVT_Indication_Checks", "EVT_Contra_Checks",
-    "Auto_Secondary", "Predicted_TOAST", "Etiology_Based_Prevention", "Final_IVT", "Final_EVT",
+    "Auto_Secondary", "Predicted_TOAST", "Etiology_Based_Prevention", "ABCD2", "TIA_Recommendation", "Final_IVT", "Final_EVT",
     "Final_Secondary", "Comments"
   ];
   const rows = registry.map((c) => {
     const assessment = evaluate(c);
+    const abcd2 = calculateABCD2(c);
     return [
-      c.caseID, c.patientID, c.fellow, formatNumber(hoursFromLKW(c), 2), c.age, c.weightKg, c.nihss,
+      c.caseID, c.patientID, c.sex, c.fellow, formatNumber(hoursFromLKW(c), 2), c.age, c.weightKg,
+      `${c.bpSystolic || ""}/${c.bpDiastolic || ""}`, c.glucoseMgDL, c.prestrokeMRS, c.nihss,
+      nihssSummary(c), c.pastMedicalHistory, c.medications,
       c.disablingDeficit, c.lvoSite, c.infarctPattern, c.aspects, c.pcAspects, tnkDose(c) == null ? "" : formatNumber(tnkDose(c), 1),
       assessment.ivtStatus, assessment.evtStatus, checkedLabels(c, "ivtIndications"), checkedLabels(c, "ivtContra"),
       checkedLabels(c, "evtIndications"), checkedLabels(c, "evtContra"), assessment.secondaryStatus, assessment.etiologyStatus, assessment.etiologyPreventionStatus,
-      c.finalIVTDecision, c.finalEVTDecision, c.finalSecondaryPlan, c.comments
+      abcd2.score, abcd2.recommendation, c.finalIVTDecision, c.finalEVTDecision, c.finalSecondaryPlan, c.comments
     ];
   });
   const csv = [header, ...rows].map((row) => row.map(csvEscape).join(",")).join("\n");
@@ -619,11 +795,13 @@ async function copyFellowNote() {
 }
 
 function generateFellowNote(c, assessment) {
+  const abcd2 = calculateABCD2(c);
   const patientLabel = c.patientID ? `Patient ID/MRN: ${c.patientID}` : "Patient ID/MRN: [not entered]";
   const caseLabel = c.caseID ? `Case ID: ${c.caseID}` : "Case ID: [not entered]";
   const fellow = c.fellow ? c.fellow : "[fellow not entered]";
   const tnkText = tnkDose(c) == null ? "not calculated because weight is not entered" : `${formatNumber(tnkDose(c), 1)} mg`;
   const ageText = c.age || "[not entered]";
+  const sexText = c.sex || "Unknown";
   const weightText = c.weightKg ? `${c.weightKg} kg` : "[not entered]";
   const nihssText = c.nihss || "[not entered]";
   const mrsText = c.prestrokeMRS || "[not entered]";
@@ -655,14 +833,19 @@ function generateFellowNote(c, assessment) {
     "",
     "Clinical data:",
     `- Age: ${ageText}`,
+    `- Sex: ${sexText}`,
     `- Weight: ${weightText}`,
-    `- NIHSS: ${nihssText}`,
+    `- BP: ${c.bpSystolic || "[not entered]"}/${c.bpDiastolic || "[not entered]"} mm Hg`,
+    `- Glucose: ${c.glucoseMgDL || "[not entered]"} mg/dL`,
     `- Pre-stroke mRS: ${mrsText}`,
+    `- NIHSS: ${nihssText}`,
+    `- NIHSS item scores: ${nihssSummary(c)}`,
     `- Disabling deficit: ${c.disablingDeficit}`,
     `- Hemorrhage on CT/MRI: ${c.hemorrhage}`,
     `- IV thrombolysis contraindication flagged: ${c.ivtContraindication}`,
     `- Blood pressure controlled for IV thrombolysis: ${c.bpControlledForIVT}`,
-    `- Glucose: ${c.glucoseMgDL || "[not entered]"} mg/dL`,
+    `- Past medical history: ${c.pastMedicalHistory || "None entered."}`,
+    `- Medications: ${c.medications || "None entered."}`,
     "",
     "Imaging / vascular data:",
     `- LVO site: ${c.lvoSite}`,
@@ -705,6 +888,13 @@ function generateFellowNote(c, assessment) {
     `- Etiology-based prevention recommendation: ${assessment.etiologyPreventionStatus}`,
     `  Rationale: ${assessment.etiologyPreventionRationale}`,
     `- Final secondary prevention plan: ${finalSecondary}`,
+    "",
+    "TIA ABCD2 assessment:",
+    `- Clinical feature: ${c.tiaClinicalFeature}`,
+    `- Duration: ${c.tiaDuration}`,
+    `- Diabetes: ${c.tiaDiabetes}`,
+    `- ABCD2 score: ${abcd2.score}`,
+    `- Recommendation: ${abcd2.recommendation}`,
     "",
     "Plan / comments:",
     comments,
