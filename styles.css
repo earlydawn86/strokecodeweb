@@ -179,6 +179,52 @@ textarea {
   resize: vertical;
 }
 
+.checklist-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.checklist-layout h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.checklist {
+  display: grid;
+  gap: 8px;
+}
+
+.check-item {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.check-item input {
+  width: 16px;
+  min-height: 16px;
+  margin-top: 1px;
+  padding: 0;
+}
+
+.check-item small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
 .full-width {
   margin-top: 12px;
 }
@@ -424,6 +470,7 @@ textarea {
 
   .grid.three,
   .grid.four,
+  .checklist-layout,
   .metric-row {
     grid-template-columns: 1fr;
   }

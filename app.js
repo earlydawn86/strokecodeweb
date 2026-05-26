@@ -12,6 +12,48 @@ const secondaryPlans = [
   "Other"
 ];
 
+const checklistGroups = {
+  ivtIndications: [
+    { id: "disablingDeficit45", label: "Disabling AIS deficit within 4.5 hours", note: "Treat rapidly if otherwise eligible; NIHSS can be low if deficit is disabling." },
+    { id: "wakeUpMismatch", label: "Wake-up/unknown onset with DWI-FLAIR or perfusion mismatch", note: "Supports selected extended-window thrombolysis." },
+    { id: "salvageablePenumbra", label: "4.5-9 hours with automated perfusion-defined salvageable penumbra", note: "Use advanced imaging selection and local protocol." },
+    { id: "noHemorrhageImaging", label: "Initial CT/MRI excludes intracranial hemorrhage", note: "Required before IVT." },
+    { id: "bpTreatable", label: "BP is controlled or treatable to IVT threshold", note: "Document treatment if BP required lowering." }
+  ],
+  ivtContra: [
+    { id: "ich", label: "Intracranial hemorrhage on CT/MRI", level: "hard", note: "Do not give IV thrombolysis." },
+    { id: "nonDisabling", label: "Non-disabling symptoms", level: "caution", note: "IVT benefit not established; DAPT may be preferred if eligible." },
+    { id: "bpUncontrolled", label: "Persistent BP above IVT threshold despite treatment", level: "hard", note: "Optimize BP before IVT." },
+    { id: "activeBleeding", label: "Active internal bleeding or recent serious bleeding", level: "hard", note: "Requires fellow/attending review." },
+    { id: "plateletsLow", label: "Platelets <100,000/mm3", level: "hard", note: "If known before treatment." },
+    { id: "inrHigh", label: "INR >1.7 or PT/aPTT significantly elevated", level: "hard", note: "If known or anticoagulant exposure suspected." },
+    { id: "doacRecent", label: "Recent DOAC use without reassuring labs/reversal pathway", level: "hard", note: "Follow local anticoagulant protocol." },
+    { id: "recentIntracranialSurgery", label: "Recent intracranial/spinal surgery or significant head trauma", level: "hard", note: "High hemorrhage risk." },
+    { id: "recentMajorSurgery", label: "Recent major surgery or noncompressible arterial puncture", level: "caution", note: "Relative risk-benefit review." },
+    { id: "suspectedEndocarditis", label: "Suspected infective endocarditis", level: "hard", note: "High hemorrhagic complication concern." },
+    { id: "aorticDissection", label: "Suspected aortic dissection", level: "hard", note: "Do not give IVT until excluded." },
+    { id: "glucoseMimic", label: "Persistent stroke mimic concern such as severe hypoglycemia", level: "caution", note: "Correct glucose/mimic when clinically indicated." }
+  ],
+  evtIndications: [
+    { id: "anteriorLVO6h", label: "Anterior ICA/M1 LVO within 6 hours", note: "NIHSS >=6, mRS 0-1, ASPECTS 3-10 supports EVT." },
+    { id: "largeCoreSelected", label: "Selected ICA/M1 large-core pathway", note: "Age <80, ASPECTS 3-5 at 6-24h or ASPECTS 0-2 <=6h, no significant mass effect." },
+    { id: "basilar24h", label: "Basilar occlusion within 24 hours", note: "mRS 0-1, NIHSS >=10, PC-ASPECTS >=6 supports EVT." },
+    { id: "lvoConfirmed", label: "CTA/MRA/angiography confirms treatable LVO", note: "Activate neurointerventional pathway." },
+    { id: "ivTNoDelay", label: "IVT candidate; EVT evaluation should not delay IVT", note: "Bridge when eligible and indicated." }
+  ],
+  evtContra: [
+    { id: "noTreatableLVO", label: "No treatable LVO identified", level: "hard", note: "EVT not indicated without target occlusion." },
+    { id: "intracranialHemorrhage", label: "Intracranial hemorrhage or alternative diagnosis", level: "hard", note: "Reassess pathway." },
+    { id: "severeMassEffect", label: "Significant mass effect/herniation concern", level: "hard", note: "Large-core selected pathways require no significant mass effect." },
+    { id: "veryPoorBaseline", label: "Severe pre-stroke disability or goals of care inconsistent with EVT", level: "caution", note: "Individualized risk-benefit discussion." },
+    { id: "noSalvageableTissue", label: "No salvageable tissue / completed infarct by local imaging review", level: "caution", note: "Review with neurointerventional team." },
+    { id: "uncontrolledMedicalInstability", label: "Uncontrolled medical instability prohibiting procedure", level: "caution", note: "Airway/hemodynamic stabilization may be needed." },
+    { id: "accessImpossible", label: "Vascular access/anatomy prohibitive", level: "caution", note: "Neurointerventional assessment required." },
+    { id: "outsideWindowNoSelection", label: "Outside guideline window without favorable imaging selection", level: "hard", note: "Document reason if proceeding." },
+    { id: "distalMevoRoutine", label: "Distal/MeVO case without individualized benefit rationale", level: "caution", note: "Routine EVT benefit not established in embedded logic." }
+  ]
+};
+
 const storageKey = "stroke-code-decision-registry-v1";
 const fields = [
   "caseID", "patientID", "fellow", "lastKnownWell", "arrival", "decisionTime", "age", "weightKg",
@@ -23,6 +65,7 @@ const fields = [
   "otherCauseType", "workupComplete", "finalIVTDecision", "finalEVTDecision", "finalSecondaryPlan",
   "comments"
 ];
+const checklistFieldNames = Object.keys(checklistGroups);
 
 let registry = loadRegistry();
 let currentCase = blankCase();
@@ -48,6 +91,7 @@ function initialize() {
   fillSelect("finalIVTDecision", acuteDecisions);
   fillSelect("finalEVTDecision", acuteDecisions);
   fillSelect("finalSecondaryPlan", secondaryPlans);
+  renderChecklists();
 
   fields.forEach((id) => {
     $(id).addEventListener("input", () => {
@@ -55,6 +99,13 @@ function initialize() {
       renderAssessment();
     });
     $(id).addEventListener("change", () => {
+      currentCase = readForm();
+      renderAssessment();
+    });
+  });
+
+  document.querySelectorAll("[data-check-group]").forEach((box) => {
+    box.addEventListener("change", () => {
       currentCase = readForm();
       renderAssessment();
     });
@@ -126,8 +177,28 @@ function blankCase() {
     finalIVTDecision: "Pending more data",
     finalEVTDecision: "Pending more data",
     finalSecondaryPlan: "Pending mechanism/workup",
-    comments: ""
+    comments: "",
+    ivtIndications: [],
+    ivtContra: [],
+    evtIndications: [],
+    evtContra: []
   };
+}
+
+function renderChecklists() {
+  renderChecklist("ivtIndicationChecklist", "ivtIndications");
+  renderChecklist("ivtContraChecklist", "ivtContra");
+  renderChecklist("evtIndicationChecklist", "evtIndications");
+  renderChecklist("evtContraChecklist", "evtContra");
+}
+
+function renderChecklist(containerID, groupName) {
+  $(containerID).innerHTML = checklistGroups[groupName].map((item) => `
+    <label class="check-item">
+      <input type="checkbox" data-check-group="${groupName}" value="${escapeHTML(item.id)}" />
+      <span>${escapeHTML(item.label)}<small>${escapeHTML(item.note || "")}</small></span>
+    </label>
+  `).join("");
 }
 
 function readForm() {
@@ -135,12 +206,21 @@ function readForm() {
   fields.forEach((id) => {
     next[id] = $(id).value;
   });
+  checklistFieldNames.forEach((group) => {
+    next[group] = Array.from(document.querySelectorAll(`[data-check-group="${group}"]:checked`)).map((box) => box.value);
+  });
   return next;
 }
 
 function writeForm(strokeCase) {
   fields.forEach((id) => {
     $(id).value = strokeCase[id] ?? "";
+  });
+  checklistFieldNames.forEach((group) => {
+    const selected = new Set(strokeCase[group] || []);
+    document.querySelectorAll(`[data-check-group="${group}"]`).forEach((box) => {
+      box.checked = selected.has(box.value);
+    });
   });
 }
 
@@ -216,8 +296,14 @@ function evaluate(c) {
 
 function evaluateIVT(c) {
   const hours = hoursFromLKW(c);
+  const hardContra = checkedItems(c, "ivtContra").filter((item) => item.level === "hard");
+  const cautionContra = checkedItems(c, "ivtContra").filter((item) => item.level === "caution");
+  const supportive = checkedItems(c, "ivtIndications");
   if (!hasNumber(c.nihss)) {
     return result("Need missing acute data", "Enter NIHSS and clinical eligibility data. Weight is only needed to calculate TNK dose.", "warn");
+  }
+  if (hardContra.length) {
+    return result("No IVT: contraindication checked", `Checked hard stop(s): ${hardContra.map((item) => item.label).join("; ")}.`, "stop");
   }
   if (c.hemorrhage === "Yes") {
     return result("No IVT", "Hemorrhage on CT/MRI is flagged.", "stop");
@@ -228,21 +314,23 @@ function evaluateIVT(c) {
   if (c.bpControlledForIVT !== "Yes") {
     return result("Optimize BP / eligibility", "BP must be controlled for IV thrombolysis before treatment.", "warn");
   }
+  const checklistText = supportive.length ? ` Supportive checklist: ${supportive.map((item) => item.label).join("; ")}.` : "";
+  const cautionText = cautionContra.length ? ` Caution flag(s): ${cautionContra.map((item) => item.label).join("; ")}.` : "";
   if (hours <= 4.5 && c.disablingDeficit === "Yes") {
     const doseText = tnkDose(c) == null
       ? "Enter weight to calculate TNK dose."
       : `Calculated dose: ${formatNumber(tnkDose(c), 1)} mg.`;
     return result(
       "IVT recommended if otherwise eligible",
-      `TNK 0.25 mg/kg max 25 mg is guideline-supported. ${doseText}`,
-      "good"
+      `TNK 0.25 mg/kg max 25 mg is guideline-supported. ${doseText}${checklistText}${cautionText}`,
+      cautionContra.length ? "warn" : "good"
     );
   }
   if (hours <= 4.5 && c.disablingDeficit !== "Yes") {
     return result("No routine IVT for non-disabling deficit", "Trials have not shown benefit for non-disabling deficits; consider DAPT if eligible.", "warn");
   }
   if (hours > 4.5 && hours <= 9 && (c.wakeupUnknownOnset === "Yes" || c.advancedImagingMismatch === "Yes") && c.salvageableTissue === "Yes") {
-    return result("Extended-window IVT may be reasonable", "Advanced imaging selection supports consideration of IVT in selected 4.5-9h or wake-up stroke patients.", "warn");
+    return result("Extended-window IVT may be reasonable", `Advanced imaging selection supports consideration of IVT in selected 4.5-9h or wake-up stroke patients.${checklistText}${cautionText}`, "warn");
   }
   return result("No routine IVT by listed criteria", "No embedded thrombolysis pathway is met. Final decision should document reason.", "stop");
 }
@@ -254,24 +342,32 @@ function evaluateEVT(c) {
   const aspects = numberOrNull(c.aspects);
   const pcAspects = numberOrNull(c.pcAspects);
   const age = numberOrNull(c.age);
+  const hardContra = checkedItems(c, "evtContra").filter((item) => item.level === "hard");
+  const cautionContra = checkedItems(c, "evtContra").filter((item) => item.level === "caution");
+  const supportive = checkedItems(c, "evtIndications");
+  if (hardContra.length) {
+    return result("No EVT: contraindication checked", `Checked hard stop(s): ${hardContra.map((item) => item.label).join("; ")}.`, "stop");
+  }
   if (nihss == null) {
     return result("Need NIHSS", "NIHSS is required for the embedded EVT pathways.", "warn");
   }
+  const checklistText = supportive.length ? ` Supportive checklist: ${supportive.map((item) => item.label).join("; ")}.` : "";
+  const cautionText = cautionContra.length ? ` Caution flag(s): ${cautionContra.map((item) => item.label).join("; ")}.` : "";
   if (c.lvoSite === "Basilar") {
     if (hours <= 24 && nihss >= 10 && mrs != null && mrs <= 1 && pcAspects != null && pcAspects >= 6) {
-      return result("EVT recommended", "Basilar occlusion within 24h, mRS 0-1, NIHSS >=10, PC-ASPECTS >=6.", "good");
+      return result("EVT recommended", `Basilar occlusion within 24h, mRS 0-1, NIHSS >=10, PC-ASPECTS >=6.${checklistText}${cautionText}`, cautionContra.length ? "warn" : "good");
     }
     return result("Review posterior criteria", "Basilar pathway needs time, mRS, NIHSS, and PC-ASPECTS confirmation.", "warn");
   }
   if (c.lvoSite === "ICA" || c.lvoSite === "M1") {
     if (hours <= 6 && nihss >= 6 && mrs != null && mrs <= 1 && aspects != null && aspects >= 3 && aspects <= 10) {
-      return result("EVT recommended", "Anterior ICA/M1 LVO <=6h, NIHSS >=6, mRS 0-1, ASPECTS 3-10.", "good");
+      return result("EVT recommended", `Anterior ICA/M1 LVO <=6h, NIHSS >=6, mRS 0-1, ASPECTS 3-10.${checklistText}${cautionText}`, cautionContra.length ? "warn" : "good");
     }
     if (age != null && age < 80 && hours <= 6 && nihss >= 6 && mrs != null && mrs <= 1 && aspects != null && aspects <= 2 && c.massEffect !== "Yes") {
-      return result("EVT reasonable in selected patient", "Selected age <80 ICA/M1 very-large-core pathway: <=6h, ASPECTS 0-2, no significant mass effect.", "warn");
+      return result("EVT reasonable in selected patient", `Selected age <80 ICA/M1 very-large-core pathway: <=6h, ASPECTS 0-2, no significant mass effect.${checklistText}${cautionText}`, "warn");
     }
     if (age != null && age < 80 && hours > 6 && hours <= 24 && nihss >= 6 && mrs != null && mrs <= 1 && aspects != null && aspects >= 3 && aspects <= 5 && c.massEffect !== "Yes") {
-      return result("EVT recommended in selected patient", "Selected age <80 ICA/M1 6-24h large-core pathway: ASPECTS 3-5, no significant mass effect.", "good");
+      return result("EVT recommended in selected patient", `Selected age <80 ICA/M1 6-24h large-core pathway: ASPECTS 3-5, no significant mass effect.${checklistText}${cautionText}`, cautionContra.length ? "warn" : "good");
     }
     return result("EVT not automatic; review imaging/trial fit", "ICA/M1 LVO is present, but embedded core criteria are incomplete or not met.", "warn");
   }
@@ -440,6 +536,16 @@ function result(status, rationale, tone) {
   return { status, rationale, tone };
 }
 
+function checkedItems(c, groupName) {
+  const selected = new Set(c[groupName] || []);
+  return checklistGroups[groupName].filter((item) => selected.has(item.id));
+}
+
+function checkedLabels(c, groupName) {
+  const labels = checkedItems(c, groupName).map((item) => item.label);
+  return labels.length ? labels.join("; ") : "None checked";
+}
+
 function renderRegistry() {
   if (!registry.length) {
     $("registryList").innerHTML = `<div class="registry-empty">No saved cases yet.</div>`;
@@ -475,6 +581,7 @@ function exportCSV() {
   const header = [
     "Case_ID", "Patient_ID", "Fellow", "Hours_From_LKW", "Age", "Weight_kg", "NIHSS", "Disabling_Deficit",
     "LVO_Site", "Infarct_Pattern", "ASPECTS", "PC_ASPECTS", "TNK_Dose_mg", "Auto_IVT", "Auto_EVT",
+    "IVT_Indication_Checks", "IVT_Contra_Checks", "EVT_Indication_Checks", "EVT_Contra_Checks",
     "Auto_Secondary", "Predicted_TOAST", "Etiology_Based_Prevention", "Final_IVT", "Final_EVT",
     "Final_Secondary", "Comments"
   ];
@@ -483,7 +590,8 @@ function exportCSV() {
     return [
       c.caseID, c.patientID, c.fellow, formatNumber(hoursFromLKW(c), 2), c.age, c.weightKg, c.nihss,
       c.disablingDeficit, c.lvoSite, c.infarctPattern, c.aspects, c.pcAspects, tnkDose(c) == null ? "" : formatNumber(tnkDose(c), 1),
-      assessment.ivtStatus, assessment.evtStatus, assessment.secondaryStatus, assessment.etiologyStatus, assessment.etiologyPreventionStatus,
+      assessment.ivtStatus, assessment.evtStatus, checkedLabels(c, "ivtIndications"), checkedLabels(c, "ivtContra"),
+      checkedLabels(c, "evtIndications"), checkedLabels(c, "evtContra"), assessment.secondaryStatus, assessment.etiologyStatus, assessment.etiologyPreventionStatus,
       c.finalIVTDecision, c.finalEVTDecision, c.finalSecondaryPlan, c.comments
     ];
   });
@@ -567,10 +675,14 @@ function generateFellowNote(c, assessment) {
     `- Salvageable tissue: ${c.salvageableTissue}`,
     "",
     "Acute reperfusion assessment:",
+    `- IVT indication checklist: ${checkedLabels(c, "ivtIndications")}`,
+    `- IVT contraindication/caution checklist: ${checkedLabels(c, "ivtContra")}`,
     `- IVT/TNK decision support: ${assessment.ivtStatus}`,
     `  Rationale: ${assessment.ivtRationale}`,
     `- Calculated tenecteplase dose: ${tnkText}`,
     `- Final IVT decision: ${finalIVT}`,
+    `- EVT indication checklist: ${checkedLabels(c, "evtIndications")}`,
+    `- EVT contraindication/caution checklist: ${checkedLabels(c, "evtContra")}`,
     `- EVT decision support: ${assessment.evtStatus}`,
     `  Rationale: ${assessment.evtRationale}`,
     `- Final EVT decision: ${finalEVT}`,
